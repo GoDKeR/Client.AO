@@ -6,7 +6,7 @@
 #include <string_view>
 
 #include <Graphics/Engine.h>
-#include <Utils/BinaryReader.h>
+#include <Utils/BinaryBuffer.h>
 
 namespace World
 {

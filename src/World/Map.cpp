@@ -14,14 +14,14 @@ namespace World
 		if (fileSize <= 0)
 			return;
 
-		auto buffer = std::vector<UInt8>(fileSize);
+		auto buffer = Vector<UInt8>(fileSize);
 
 		std::ifstream stream(fileName.data(), std::ios::binary | std::ios::ate);
 		stream.seekg(0, std::ios::beg);
 		stream.read(reinterpret_cast<char*>(&buffer[0]), fileSize);
 		stream.close();
 		
-		auto reader = Utils::BinaryReader(std::move(buffer), fileSize);
+		auto reader = Utils::BinaryBuffer(std::move(buffer), fileSize);
 		
 		reader.SkipBytes(273);
 		

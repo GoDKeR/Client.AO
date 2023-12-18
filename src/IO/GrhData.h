@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <fstream>
 
-#include <Utils/BinaryReader.h>
+#include <Utils/BinaryBuffer.h>
 
 namespace IO
 {
@@ -41,7 +41,7 @@ namespace IO
 			stream.read(reinterpret_cast<char*>(&buffer[0]), fileSize);
 			stream.close();
 
-			auto reader = Utils::BinaryReader(std::move(buffer), fileSize);
+			auto reader = Utils::BinaryBuffer(std::move(buffer), fileSize);
 
 			Int32 version = reader.ReadInt32();
 			Int32 grhCount = reader.ReadInt32();

@@ -13,7 +13,6 @@
 #ifndef NK_D3D11_H_
 #define NK_D3D11_H_
 
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 typedef struct ID3D11Device ID3D11Device;
@@ -38,7 +37,6 @@ NK_API void nk_d3d11_shutdown(void);
  */
 #ifdef NK_D3D11_IMPLEMENTATION
 
-#define WIN32_LEAN_AND_MEAN
 #define COBJMACROS
 #include <d3d11.h>
 

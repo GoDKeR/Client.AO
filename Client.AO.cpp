@@ -2,7 +2,9 @@
 //
 #include <Windows.h>
 #include <Game.h>
-#include <Network/Connection.h>
+#include <Network/Protocol.h>
+
+#include <Utils/BinaryBuffer.h>
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -29,10 +31,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	hWnd = CreateWindowEx(WS_EX_APPWINDOW, L"ArgentumClient", L"ArgentumClient", WS_POPUP | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, (wr.right - wr.left), (wr.bottom - wr.top), 0, NULL, hInstance, NULL);
 
-	//test
-	auto con = std::make_unique<Network::Connection>();
-	//test
-
 	game = std::make_unique<Game>(hWnd, 1366, 768);
 
 	ShowWindow(hWnd, cmdShow);
@@ -56,6 +54,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		game->OnDraw();
 
+		game->FlushProtocol();
 	}
 
 	UnregisterClass(wc.lpszClassName, wc.hInstance);

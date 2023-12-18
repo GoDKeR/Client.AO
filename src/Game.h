@@ -12,24 +12,27 @@
 struct nk_context;
 //struct nk_colorf;
 
+#include <UI/ConnectWindow.h>
+
 class Game
 {
 private:
 
-	enum GameWindows
+	UPtr<Graphics::Engine>	mEngine = nullptr;
+	UPtr<World::Map>		mMap	= nullptr;
+	UPtr<Network::Protocol> mProtocol = nullptr;
+
+	nk_context*				mNuklearContext = nullptr;
+	//nk_colorf				mNuklearBackgroundColor;// = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+	enum class GameWindows
 	{
 		Connect,
 		CharCreation,
 		Main
 	};
 
-	GameWindows				mCurrentWindow = GameWindows::Connect;
-
-	UPtr<Graphics::Engine>	mEngine = nullptr;
-	UPtr<World::Map>		mMap	= nullptr;
-
-	nk_context*				mNuklearContext = nullptr;
-	//nk_colorf				mNuklearBackgroundColor;// = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Vector<UPtr<UI::INuklearWindow>> mGameWindows;
 
 public:
 	
@@ -42,4 +45,6 @@ public:
 
 	void UIInputCaptureBegin();
 	void UIInputCaptureEnd();
+
+	void FlushProtocol();
 };

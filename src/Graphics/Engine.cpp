@@ -545,7 +545,7 @@ namespace Graphics
 	void Engine::Write(VertexPositionColorTexture* vertices, Int32& position)
 	{
 		const UInt32 offset = mVBOffset + (position / 4) > MAX_SPRITES ? 0 : mVBOffset;
-
+		
 		D3D11_MAPPED_SUBRESOURCE subResource;
 		mContext->Map(mVertexBuffer.Get(), 0, (offset == 0 ? D3D11_MAP_WRITE_DISCARD : D3D11_MAP_WRITE_NO_OVERWRITE), 0, &subResource);
 
@@ -574,8 +574,19 @@ namespace Graphics
 		UInt8* imageData = stbi_load(path.data(), &width, &height, nullptr, STBI_rgb_alpha);
 		Int32 imagePitch = width * 4;
 
-		D3D11_TEXTURE2D_DESC textureDesc = { 0 };
+		if (imageData == NULL)
+		{
+#if defined(_DEBUG)
+			//Load a fallback, just for testing purposes
+			imageData = stbi_load("D:/Downloads/ArgentumOnline0.13.3-Cliente-Servidor/client/Graficos/1.png", &width, &height, nullptr, STBI_rgb_alpha);
+			imagePitch = width * 4;
+#else
+			return NULL; //TODO: some error handling
+#endif
+		}
 
+		D3D11_TEXTURE2D_DESC textureDesc = { 0 };
+		
 		textureDesc.Width = width;
 		textureDesc.Height = height;
 		textureDesc.ArraySize = 1;

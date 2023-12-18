@@ -15,10 +15,12 @@
 
 Game::Game(HWND hwnd, int width, int height)
 {
-	mCurrentWindow = GameWindows::Connect;
 
 	mEngine = std::make_unique<Graphics::Engine>(hwnd, width, height, false);
 	mMap = std::make_unique<World::Map>("D:/Downloads/ArgentumOnline0.13.3-Cliente-Servidor/client/Mapas/mapa1.map");
+	mProtocol = std::make_unique<Network::Protocol>();
+
+	mGameWindows.push_back(std::make_unique<UI::ConnectWindow>(static_cast<Int32>(GameWindows::Connect), "Conectar", true));
 
 	//UI INIT
 	//mNuklearContext = std::make_unique<nk_context>(nk_d3d11_init(mEngine->GetDevice().Get(), width, height, MAX_NK_VERTEX_BUFFER, MAX_NK_INDEX_BUFFER));
@@ -36,12 +38,11 @@ Game::Game(HWND hwnd, int width, int height)
 		/*struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../../extra_font/Cousine-Regular.ttf", 13, 0);*/
 		nk_d3d11_font_stash_end();
 	}
-
-	//nk_begin 	Starts a new window; needs to be called every frame for every window (unless hidden) or otherwise the window gets removed 
 }
 
 Game::~Game()
 {
+	mProtocol->Disconnect();
 	nk_d3d11_shutdown();
 }
 
@@ -60,25 +61,11 @@ void Game::OnDraw()
 
 	mEngine->DepthStateDisabled();
 	//UI thingy things goes here
-	if (nk_begin(mNuklearContext, "Conectar", nk_rect(50, 50, 400, 200), NK_WINDOW_MOVABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE | NK_WINDOW_NO_SCROLLBAR))
+
+	for (auto& win : mGameWindows)
 	{
-		static char nameInput[30];
-		static char passInput[30];
-		static int	textLength[2];
-
-		nk_layout_row_dynamic(mNuklearContext, 0, 2);
-		nk_label(mNuklearContext, "Usuario", NK_TEXT_LEFT);
-		nk_edit_string(mNuklearContext, NK_EDIT_FIELD, &nameInput[0], &textLength[0], 30, nk_filter_default);
-		nk_label(mNuklearContext, "Contrasena", NK_TEXT_LEFT);
-		nk_edit_string(mNuklearContext, NK_EDIT_FIELD, &passInput[0], &textLength[1], 30, nk_filter_default);
-
-		nk_layout_row_dynamic(mNuklearContext, 0, 2);
-		/*if (*/nk_button_label(mNuklearContext, "Crear Personaje");/*)
-			crearpj*/
-		/*if (*/nk_button_label(mNuklearContext, "Conectar");/*)
-			conectar*/
+		win->DrawWindow(mNuklearContext, mProtocol.get());
 	}
-	nk_end(mNuklearContext);
 
 	nk_d3d11_render(mEngine->GetDeviceContext().Get(), NK_ANTI_ALIASING_ON);
 	mEngine->DepthStateEnabled();
@@ -104,4 +91,9 @@ void Game::UIInputCaptureBegin()
 void Game::UIInputCaptureEnd()
 {
 	nk_input_end(mNuklearContext);
+}
+
+void Game::FlushProtocol()
+{
+	mProtocol->SendData();
 }

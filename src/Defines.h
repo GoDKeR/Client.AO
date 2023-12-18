@@ -23,6 +23,7 @@ using UInt32	= std::uint32_t;
 using Bool		= bool;
 
 using String	= std::string;
+using WString	= std::wstring;
 
 template<typename T>
 using Vector	= std::vector<T>;
@@ -40,3 +41,6 @@ using ComPtr	= Microsoft::WRL::ComPtr<T>;
 
 template<typename T>
 using UPtr		= std::unique_ptr<T>;
+
+template<typename T>
+using SPtr		= std::shared_ptr<T>;
